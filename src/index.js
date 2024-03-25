@@ -1,10 +1,8 @@
 import express from "express";
 import morgan from "morgan";
-import mongoose from "mongoose";
 import cors from "cors";
 import therapistRoute from "./routers/therapistRoute"
 import contactRoute from "./routers/ContactRoute"
-import swaggerDocumention from "./helper/documentations"
 const app = express();
 import useRouter from "./routers/user"
 import auth from "./routers/auth"
@@ -19,7 +17,6 @@ app.use(express.urlencoded({ extended: true }));
 app.get("/", (req, res) => {
   res.send({ message: "welcome to my server" });
 });
-swaggerDocumention(app);
 app.use("/Document", express.static("../Document"));
 app.use("/api/auth/",auth);
 app.use("/api/user/",useRouter);

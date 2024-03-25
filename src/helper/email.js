@@ -1,5 +1,4 @@
 import nodemailer from 'nodemailer'
-// import fromEmail from "../routers/forgetPassword"
 const { Email, password } = process.env;
 
 export const mailer = async  (email,message) => {
