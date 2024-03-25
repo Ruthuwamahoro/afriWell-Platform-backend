@@ -9,6 +9,7 @@ import auth from "./routers/auth"
 import forget from "./routers/forgetPassword"
 import conversationRouter from "./routers/conversation"
 import MessagesRouter from "./routers/messages"
+
 app.use(cors({ origin: "*" }));
 app.use(cors())
 app.use(morgan("dev"));
