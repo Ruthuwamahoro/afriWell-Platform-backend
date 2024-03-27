@@ -9,7 +9,7 @@ import auth from "./routers/auth"
 import forget from "./routers/forgetPassword"
 import conversationRouter from "./routers/conversation"
 import MessagesRouter from "./routers/messages"
-
+import bookingRouter from './routers/booking'
 app.use(cors({ origin: "*" }));
 app.use(cors())
 app.use(morgan("dev"));
@@ -27,6 +27,7 @@ app.use("/api/therapist/", therapistRoute);
 app.use("/api/auth/",forget);
 app.use('/api/conversation',conversationRouter);
 app.use('/api/messages',MessagesRouter);
+app.use("/api/user", bookingRouter)
 
 
 app.use("/**", (req, res) => {
