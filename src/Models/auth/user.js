@@ -1,11 +1,14 @@
 
-import mongoose from "mongoose";
+import mongoose, { Schema} from "mongoose";
 
 const userSchema = mongoose.Schema({
-    Names:{
+    firstName:{
         type:String,
-        required: true,
-        
+        required: true
+    },
+    lastName:{
+        type:String,
+        required:true
     },
     email:{
       type:String,
@@ -14,7 +17,7 @@ const userSchema = mongoose.Schema({
 
     },
 
-    phoneNumber:{
+    phone:{
       type:String,
       required: true
     },
@@ -39,6 +42,12 @@ const userSchema = mongoose.Schema({
         type:String,
         default: "user"
     },token: { type: String },
+    bookingUser: [{
+        type: Schema.Types.ObjectId,
+        ref: 'Booking'
+    }]
+
+
     
 },
 { timestamps: true })

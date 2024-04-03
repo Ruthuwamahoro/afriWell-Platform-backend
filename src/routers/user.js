@@ -26,16 +26,17 @@ router.post("/register", async (req, res) => {
       const hashedPass = await bcrypt.hash(req.body.password, salt)
   
       const newUser = new User({
-        Names: req.body.Names,
+        firstName: req.body.firstName,
+        lastName: req.body.lastName,
         email: req.body.email,
-        phoneNumber: req.body.phoneNumber,
+        phone: req.body.phone,
         Gender:req.body.Gender,
         password: hashedPass,
         
       });
-      const phoneNumber = await User.find({ phoneNumber: req.body.phoneNumber })
+      const phone = await User.find({ phone: req.body.phone })
       const userEmail = await User.find({ email: req.body.email })
-      if (phoneNumber.length !== 0) {
+      if (phone.length !== 0) {
         return res.status(402).json({
           message: "this user phone number is already used"
         })
@@ -54,6 +55,26 @@ router.post("/register", async (req, res) => {
      return res.status(500).json(err)
     }
   });
+
+  router.get("/register", async (req, res) => {
+    try {
+      // Await the result of User.findAll() to get the actual data
+      const users = await User.find().populate('bookingUser');
+  
+      // Send the users as JSON in the response
+      res.json({status: 'ok', users: users});
+    } catch (error) {
+      // Handle any errors that occur during the process
+      console.error(error);
+      res.status(500).json({ error: "Internal Server Error" });
+    }
+  });
+
+
+
+
+  
+  // Route definition for retrieving registered users
 
 //   router.get("/all", middlewares.middleware,async (req, res) => {
 //     try {

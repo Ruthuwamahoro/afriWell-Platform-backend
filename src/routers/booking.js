@@ -1,9 +1,8 @@
 
-      
+import jwt from 'jsonwebtoken'     
 import express from 'express'
 import Booking from '../Models/booking'
 import { Strategy, ExtractJwt } from 'passport-jwt';
-import { StrategyOptions } from 'passport-jwt';
 import passport from 'passport'
 require('dotenv').config()
 import User from "../Models/auth/user"
@@ -32,8 +31,6 @@ async function seeBookingInfo(req, res) {
     }
 }
 
-//handling addition of project
-
 
 async function allowPostbooking(req, res, next) {
     passport.authenticate('jwt', {session: false}, async(err, user, ) => {
@@ -44,18 +41,26 @@ async function allowPostbooking(req, res, next) {
             if(!user){
                 return res.status(401).json({status: 401, error: "please login is required"})
             }
-            const {firstName, lastName, phone,therapists, email, date, time} = req.body;
+            const token = req.headers.authorization?.split(' ')[1];
+            const verification = jwt.verify(token, process.env.TOKEN_KEY || 'heyyou')
+            const id = verification._id
+            console.log(id)
+            const email = verification.email
+            const firstName = verification.firstName
+            const lastName = verification.lastName
+            const {therapists, date, time} = req.body;
             const book= new Booking({
-                firstName, 
-                lastName,  
-                phone,
+                firstName: firstName,
+                lastName: lastName, 
+                email:email,
                 therapists,
-                email,
                 date,
                 time
             })
+            console.log(firstName)
             await book.save()
-            res.json({data: 'sent successfully'})
+            console.log(book);
+            res.json({bookingInfo: book,data: 'sent successfully'})
         } catch(err){
             return next(err)
         }
@@ -76,8 +81,6 @@ async function allowUpdatebookingInfo (req, res, next) {
             }
             const updateBook = await Booking.findByIdAndUpdate(req.params.id, {
                 $set: {
-                    firstName: req.body.firstName,
-                    lastName: req.body.lastName,
                     phone: req.body.phone,
                     therapists: req.body.therapists,
                     email: req.body.email,
@@ -95,7 +98,7 @@ async function allowUpdatebookingInfo (req, res, next) {
 }
 
 
-//handling delete single project
+// //handling delete single project
 async function allowDeleteBooking (req, res, next) {
     passport.authenticate('jwt', {session: false}, async(err, user) => {
         try{
@@ -107,17 +110,20 @@ async function allowDeleteBooking (req, res, next) {
             }
             const deleteBook = await Booking.findByIdAndDelete(req.params.id)
             if (!deleteBook) return res.status(400).send({msg:"id not found"})
-            res.send("BookingInfo Deleted Successfully")
+            res.json({data:"BookingInfo Deleted Successfully"})
         } catch(err){
             return next(err)
         }
     })(req,res,next)
 }
 
+
+
+
 async function accessSingleBooking (req, res) {
   try{
-      const singleBooking = await Booking.findById(req.params.id)
-      if(singleBooking === null) res.status(400).json({status: 400, error: "id not found"})
+      const singleBooking = await Booking.findOne({ id: req.params.id})
+      if(singleBooking === null) res.status(400).json({status: 400, error: "Booking not found"})
       res.json({status: "ok",data:singleBooking});
 
   } catch(err){
@@ -125,6 +131,8 @@ async function accessSingleBooking (req, res) {
   }
   
 }
+
+
 
 
 
@@ -150,7 +158,7 @@ passport.use(new Strategy(jwtOptions, async(jwtPayload, done) => {
 
 //define routes
 
-router.get('/booking', seeBookingInfo)
+// router.get('/booking', seeBookingInfo)
 router.get('/booking/:id', accessSingleBooking)
 router.post('/booking', allowPostbooking)
 router.patch('/booking/:id', allowUpdatebookingInfo)

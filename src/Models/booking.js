@@ -1,16 +1,18 @@
+import mongoose, { Schema} from "mongoose";
 
-import mongoose from "mongoose";
 
 const BookingSchema = mongoose.Schema({
-    firstName:{
-        type:String,
-        required: true
+    bookingId: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'User'
     },
-    lastName:{
-        type:String,
-        required:true
+    firstName: {
+        type: String,
     },
-    phone:{
+    lastName: {
+        type: String,
+    },
+    email:{
         type:String,
         required:false
     },
@@ -19,10 +21,6 @@ const BookingSchema = mongoose.Schema({
         required:true
     },
 
-    email:{
-        type:String,
-        required:false
-    },
     date: {
         type: Date, 
         required:true
@@ -30,7 +28,7 @@ const BookingSchema = mongoose.Schema({
     time: {
         type:String,
         required:true
-    } 
+    }
 },
 { timestamps: true })
 const Booking= mongoose.model("Booking",BookingSchema)
