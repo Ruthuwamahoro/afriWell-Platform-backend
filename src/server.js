@@ -1,6 +1,7 @@
 import app from ".";
 import dotenv from "dotenv";
 import mongoose from "mongoose";
+import swaggerDocs from "./documentation/swagger";
 
 
 
@@ -16,6 +17,7 @@ const server = app.listen(PORT, () => {
     .then(() => {
       console.log("connected to mongodb");
       console.info("Server is running on port: ", PORT);
+      swaggerDocs(app, PORT);
     })
     .catch((err) => {
       console.log(err);

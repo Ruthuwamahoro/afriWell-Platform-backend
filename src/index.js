@@ -23,12 +23,10 @@ app.use("/api/contact/", contactRoute);
 app.use("/api/auth/",forget);
 app.use("/api/user", bookingRouter)
 
-
 app.use("/**", (req, res) => {
   res.json({ error: { status: 404, message: "Router not found" } });
 });
 
-;
 
 export default app;
 
