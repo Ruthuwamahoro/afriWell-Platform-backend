@@ -158,7 +158,7 @@ passport.use(new Strategy(jwtOptions, async(jwtPayload, done) => {
 
 //define routes
 
-// router.get('/booking', seeBookingInfo)
+router.get('/booking', seeBookingInfo)
 router.get('/booking/:id', accessSingleBooking)
 router.post('/booking', allowPostbooking)
 router.patch('/booking/:id', allowUpdatebookingInfo)
