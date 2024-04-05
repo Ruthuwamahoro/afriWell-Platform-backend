@@ -3,8 +3,7 @@ import express from "express";
 import User from "../Models/auth/user";
 import bcrypt from "bcrypt"
 import multer from "multer"
-import middlewares from "../middleware/middlewares";
-import Appointment from "../Models/availability";
+import { registerSchema} from '../validation/contactValidation'
 
 
 
@@ -22,6 +21,11 @@ const upload = multer({ storage: storage })
 
 router.post("/register", async (req, res) => {
     try {
+      const result = registerSchema.validate(req.body, options);
+      if (result.error) {
+          const messageError = result.error.details.map((error) => error.message).join(', ');
+          return res.status(400).json({ status: 400, error: messageError });
+      }
       const salt = await bcrypt.genSalt(10);
       const hashedPass = await bcrypt.hash(req.body.password, salt)
   
@@ -70,57 +74,6 @@ router.post("/register", async (req, res) => {
     }
   });
 
-
-
-
-  
-  // Route definition for retrieving registered users
-
-//   router.get("/all", middlewares.middleware,async (req, res) => {
-//     try {
-//         let users = await User.find()
-//         users = users.filter((user)=>user.role !== "admin")
-//         return res.status(200).json(users)
-//     } catch (err) {
-//         return res.status(401).json(err)
-//     }
-// });
-//  router.post("/Appointment",middlewares.middleware,async(req,res)=>{
-//   const userId = req.userData.user_id;
-//   const email=userId.email
-//   try {
-//     const newAppointment= new Appointment({
-//         patientId:userId,
-//         emailUser:email,
-//         therapyType:req.body.therapyType,
-//         SessionPackage:req.body.SessionPackage, 
-//         appointmentDate:req.body.appointmentDate,
-//         SessiontimeStart:req.body.SessiontimeStart,
-//         SessiontimeEnd:req.body.SessiontimeEnd,
-//         reason:req.body.reason,
-        
-// });
-// const appointment = await newAppointment.save();
-    
-//     return res.status(200).json(appointment)
-
-//   } catch (error) {
-//     return res.status(500).json('error')
-//   }
-//  });
- 
-//  router.delete("/user/:id",middlewares.middlewareAdmin, async (req, res) => {
-//   try {
-//     const user = await User.findById(req.userData._id);
-//     if (!user) {
-//       return res.status(404).json({ message: "User not found" });
-//     }
-//     await User.findByIdAndDelete(req.params.id);
-//     return res.status(200).json({ message: "User deleted successfully" });
-//   } catch (err) {
-//     return res.status(500).json(err);
-//   }
-// });
 
  
 
